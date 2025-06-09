@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提示页</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .content {
+        text-align: center;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #333333;
+    }
+    p {
+        color: #666666;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="content">
+    <h1>{{msg}}</h1>
+    <h4 class="smaller">页面自动 <a id="href" href="{{url}}">跳转</a> 等待时间：
+            <b id="wait">
+                4
+            </b>
+        </h4>
+</div>
+
+<script>
+   (function(){
+       var wait = document.getElementById('wait'),href = document.getElementById('href').href;
+       var interval = setInterval(function(){
+           var time = --wait.innerHTML;
+           if(time <= 0) {
+               location.href = href;
+               clearInterval(interval);
+           };
+       }, 1000);
+       })();
+</script>
+
+</body>
+</html>

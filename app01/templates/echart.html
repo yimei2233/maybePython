@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+	<script src="{% static 'js/echarts.min.js' %}"></script>
+	<script src="{% static 'js/jquery.js' %}"></script>
+	<script src="{% static 'js/macarons.js' %}"></script>
+	<style>
+		#main{
+			display: flex;
+			flex-wrap: wrap;
+		}
+	</style>
+</head>
+<body>
+	<div id="main" style="width: 1600px;height: 1800px;">
+		<div id="one" style="width: 800px; height: 600px; "></div>
+		<div id="two" style="width: 800px; height: 600px;"></div>
+		<div id="three" style="width: 800px; height: 600px; "></div>
+		<div id="four" style="width: 800px; height: 600px;"></div>
+		<div id="five" style="width: 800px; height: 600px;"></div>
+		<script>
+			$(function(){
+				let chat = echarts.init(document.getElementById('one'),'roma')
+				let chat2 = echarts.init(document.getElementById('two'),'roma')
+				let chat3 = echarts.init(document.getElementById('three'),'roma')
+				let chat4 = echarts.init(document.getElementById('four'),'roma')
+				let chat5 = echarts.init(document.getElementById('five'),'roma')
+				$.ajax({
+					url:'/handle_one/',
+					type:'GET',
+					success:res=>{
+							option = {
+							  title: {
+								text: '1.不同种类的游戏数量占比'
+							  },
+							  tooltip: {
+								trigger: 'axis',
+								axisPointer: {
+								  type: 'shadow'
+								}
+							  },
+							  legend: {},
+							  grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							  },
+							  xAxis: {
+								type: 'value',
+								boundaryGap: [0, 0.01]
+							  },
+							  yAxis: {
+								type: 'category',
+								data: res.category
+							  },
+							  series: [
+								{
+								  name: '数量',
+								  type: 'bar',
+								  data: res.count
+								}
+							  ]
+							};
+							chat.setOption(option)
+							
+						}
+						})
+				$.ajax({
+					url:'/handle_two/',
+					type:'GET',
+					success:res=>{
+						option2 = {
+							title: {
+							    text: '2.不同种类的游戏的平均热度',
+								
+							  },
+						  tooltip: {
+						    trigger: 'item'
+						  },
+						  legend: {
+						    top: '5%',
+						    left: 'center'
+						  },
+						  series: [
+						    {
+						      name: '不同种类的游戏的平均热度',
+						      type: 'pie',
+						      radius: ['40%', '70%'],
+						      avoidLabelOverlap: false,
+						      padAngle: 5,
+						      itemStyle: {
+						        borderRadius: 10
+						      },
+						      label: {
+						        show: false,
+						        position: 'center'
+						      },
+						      emphasis: {
+						        label: {
+						          show: true,
+						          fontSize: 40,
+						          fontWeight: 'bold'
+						        }
+						      },
+						      labelLine: {
+						        show: false
+						      },
+						      data: res.data
+						    }
+						  ]
+						};
+						chat2.setOption(option2)
+					}
+				})
+				$.ajax({
+					url:'/handle_three/',
+					type:'GET',
+					success:res=>{
+						option = {
+						title: {
+							text: '3.不同种类的游戏评论数'
+						},
+							
+						  xAxis: {
+						    type: 'category',
+						    boundaryGap: false,
+						    data: res.category,
+							axisLabel: {
+							        rotate: 45, // 标签旋转角度
+							        interval: 0 // 间隔显示标签，0 表示全部显示
+							    }
+						  },
+						  yAxis: {
+						    type: 'value'
+						  },
+						  series: [
+						    {
+						      data: res.avg,
+						      type: 'line',
+						      areaStyle: {}
+						    }
+						  ]
+						};
+						
+						chat3.setOption(option)
+					}
+				})
+				$.ajax({
+					url:'/handle_four/',
+					type:'GET',
+					success:res=>{
+						option = {
+							title: {
+								text: '4.游戏热度与评论数的关系'
+							},
+						  xAxis: {
+							  name:'游戏热度'
+						  },
+						  yAxis: {
+							  name:'评论数'
+						  },
+						  series: [
+						    {
+								
+						      symbolSize: 20,
+						      data: res.data,
+						      type: 'scatter'
+						    }
+						  ]
+						};
+					
+						chat4.setOption(option)
+					}
+				})
+				$.ajax({
+					url:'/handle_five/',
+					type:'GET',
+					success:res=>{
+						option = {
+						  title: {
+						    text: '5.不同游戏类别的雷达图'
+						  },
+						  legend: {
+						    data: ['敏捷小游戏','射击小游戏','综合小游戏','冒险小游戏','策略小游戏','动作小游戏','益智小游戏','体育小游戏','休闲小游戏','装扮小游戏','儿童小游戏','模拟经营小游戏','棋牌小游戏','测试小游戏','搞笑小游戏' ],
+							left: 'center',  // 居中显示
+							top: 'bottom'    // 距离底部一定距离
+						  },
+						  radar: {
+						    // shape: 'circle',
+						    indicator: [
+						      { name: '游戏大小', max: 10 },
+						      { name: '热度', max: 910 },
+						      { name: '评论数', max: 75 },
+						    ]
+						  },
+						  series: [
+						    {
+						      name: 'Budget vs spending',
+						      type: 'radar',
+						      data: [
+						        {
+						          value: res.敏捷小游戏,
+						          name: '敏捷小游戏'
+						        },
+						        {
+						          value: res.射击小游戏,
+						          name: '射击小游戏'
+						        },
+								{
+								  value: res.综合小游戏,
+								  name: '综合小游戏'
+								},
+								{
+								  value: res.冒险小游戏,
+								  name: '冒险小游戏'
+								},
+								{
+								  value: res.策略小游戏,
+								  name: '策略小游戏'
+								},
+								{
+								  value: res.动作小游戏,
+								  name: '动作小游戏'
+								},
+								{
+								  value: res.益智小游戏,
+								  name: '益智小游戏'
+								},
+								{
+								  value: res.体育小游戏,
+								  name: '体育小游戏'
+								},
+								{
+								  value: res.休闲小游戏,
+								  name: '休闲小游戏'
+								},
+								{
+								  value: res.装扮小游戏,
+								  name: '装扮小游戏'
+								},
+								{
+								  value: res.儿童小游戏,
+								  name: '儿童小游戏'
+								},
+								{
+								  value: res.模拟经营小游戏,
+								  name: '模拟经营小游戏'
+								},
+								{
+								  value: res.棋牌小游戏,
+								  name: '棋牌小游戏'
+								},
+								{
+								  value: res.测试小游戏,
+								  name: '测试小游戏'
+								},
+								{
+								  value: res.搞笑小游戏,
+								  name: '搞笑小游戏'
+								},
+						      ]
+						    }
+						  ]
+						};
+						chat5.setOption(option)
+					
+					}
+				})
+				
+			})
+			
+			
+		</script>
+	</div>
+	
+</body>
+</html>

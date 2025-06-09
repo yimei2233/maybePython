@@ -1,0 +1,3 @@
+.venv
+app01/static/game_img
+db.sqlite3
